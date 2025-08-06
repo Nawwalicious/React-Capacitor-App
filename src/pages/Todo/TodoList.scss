@@ -1,0 +1,109 @@
+@import '../../App.scss';
+
+.todo-list-page {
+  .todos-container {
+    display: flex;
+    flex-direction: column;
+    gap: $base-unit;
+  }
+
+  .add-todo-btn {
+    position: fixed;
+    bottom: $base-unit * 3;
+    right: $base-unit * 3;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    font-size: 2rem;
+    font-weight: $font-weight-light;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transition: all $metro-duration-normal $metro-ease;
+    z-index: 1001;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+    &:active {
+      transform: scale(0.9);
+    }
+  }
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: $base-unit * 2;
+  background: var(--card-color);
+  padding: $base-unit * 2;
+  transition: all $metro-duration-normal $metro-ease;
+
+  .todo-checkbox {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+
+  .todo-text {
+    flex-grow: 1;
+    cursor: pointer;
+  }
+
+  &.completed .todo-text {
+    text-decoration: line-through;
+    color: var(--text-disabled);
+  }
+
+  .delete-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    opacity: 0;
+    transition: all $metro-duration-normal $metro-ease;
+  }
+
+  &:hover .delete-btn {
+    opacity: 1;
+  }
+}
+
+// Modal styles from AddCurrencyModal can be reused, but let's be explicit
+.modal-overlay {
+  // ... Paste styles from AddCurrencyModal.scss ...
+}
+.modal-content {
+  // ... Paste styles from AddCurrencyModal.scss ...
+  .modal-body {
+    padding: $base-unit * 3;
+  }
+  .todo-input-modal {
+    width: 100%;
+    background: var(--surface-color);
+    border: 2px solid transparent;
+    color: var(--text-primary);
+    padding: $base-unit * 2;
+    font-size: 1rem;
+    &:focus {
+        outline: none;
+        border-color: var(--accent-color);
+    }
+  }
+  .modal-footer {
+    padding: $base-unit * 3;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .save-btn {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: $base-unit * 1.5 $base-unit * 3;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+}

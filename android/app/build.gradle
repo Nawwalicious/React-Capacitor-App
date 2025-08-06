@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace "com.nawwal.currencyconverter"
+    namespace "com.nawwal.metroutilitysuite"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.nawwal.currencyconverter"
+        applicationId "com.nawwal.metroutilitysuite"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

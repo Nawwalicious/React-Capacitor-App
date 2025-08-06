@@ -1,0 +1,122 @@
+@import '../App.scss';
+
+.dashboard-grid {
+  display: grid;
+  gap: 2px; // Metro UI uses minimal gaps
+  grid-template-columns: repeat(2, 1fr);
+  margin-bottom: $base-unit * 4;
+
+  // Larger screens get more tiles
+  @media (min-width: 500px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.dashboard-tile {
+  aspect-ratio: 1 / 1;
+  background-color: var(--accent-color);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; // Metro tiles align content to start
+  justify-content: flex-end; // Content at bottom like Windows Phone
+  text-decoration: none;
+  transition: all $metro-duration-fast ease;
+  position: relative;
+  padding: $base-unit * 2;
+  overflow: hidden;
+  
+  // Metro UI flat design - no border radius
+  border-radius: 0;
+  
+  // Subtle press animation
+  &:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+
+  // Metro hover effect - very subtle
+  &:hover {
+    filter: brightness(1.1);
+  }
+
+  // Metro tile icon positioning
+  .tile-icon {
+    position: absolute;
+    top: $base-unit * 2;
+    left: $base-unit * 2;
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    // Metro icons are simple and geometric
+    svg {
+      width: 100%;
+      height: 100%;
+      fill: white;
+      stroke: none;
+    }
+  }
+
+  // Metro tile text styling
+  .tile-label {
+    font-size: 1.5rem;
+    font-weight: $font-weight-semilight;
+    line-height: 1.2;
+    color: white;
+    text-transform: lowercase; // Metro UI uses lowercase
+    margin: 0;
+    z-index: 1;
+    max-width: 100%;
+    word-wrap: break-word;
+  }
+
+  // Metro tile colors and patterns
+  &.currency { 
+    background: linear-gradient(135deg, #0078d4 0%, #106ebe 100%);
+  }
+
+  &.calculator { 
+    background: linear-gradient(135deg, #107c10 0%, #0e6e0e 100%);
+  }
+
+  &.units { 
+    background: linear-gradient(135deg, #d13438 0%, #b92b2f 100%);
+  }
+
+  &.todo { 
+    background: linear-gradient(135deg, #881798 0%, #7a1589 100%);
+  }
+
+  // Metro tile accent pattern (optional decorative element)
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 40%;
+    height: 40%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: skew(-15deg) translateX(20px) translateY(-20px);
+    pointer-events: none;
+  }
+}
+
+// Metro typography for header
+.header {
+  .app-title {
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    font-weight: $font-weight-light;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    line-height: 0.85;
+    margin: 0 0 $base-unit * 4 0;
+    text-transform: lowercase; // Metro style
+  }
+}

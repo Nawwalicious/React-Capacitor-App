@@ -453,3 +453,70 @@ input:focus-visible {
     transform: scale(0.95) !important;
   }
 }
+
+// DASHBOARD STYLES HERE
+
+// Global Header for Sub-Pages
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: $base-unit * 2;
+  margin-bottom: $base-unit * 4;
+
+  .back-btn {
+    background: var(--card-color);
+    border: 2px solid transparent;
+    color: var(--text-primary);
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    transition: all $metro-duration-normal $metro-ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: $font-weight-light;
+
+    &:hover {
+      background: var(--accent-color);
+      color: white;
+      transform: scale(1.05);
+    }
+  }
+
+  .page-title {
+    font-size: clamp(2rem, 8vw, 3.5rem);
+    font-weight: $font-weight-light;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    line-height: 0.9;
+    margin: 0;
+  }
+}
+
+// Pivot Control Style (for Unit Converter & To-Do)
+.pivot-control {
+  display: flex;
+  gap: $base-unit * 3;
+  margin-bottom: $base-unit * 3;
+  border-bottom: 1px solid var(--text-disabled);
+
+  .pivot-item {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    padding: $base-unit $base-unit * 2;
+    font-size: 1rem;
+    font-family: $font-family;
+    font-weight: $font-weight-normal;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transform: translateY(1px);
+    transition: all $metro-duration-normal $metro-ease;
+
+    &.active {
+      color: var(--text-primary);
+      border-bottom-color: var(--accent-color);
+    }
+  }
+}

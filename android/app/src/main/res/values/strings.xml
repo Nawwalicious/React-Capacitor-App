@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Currency Converter</string>
-    <string name="title_activity_main">Currency Converter</string>
-    <string name="package_name">com.nawwal.currencyconverter</string>
-    <string name="custom_url_scheme">com.nawwal.currencyconverter</string>
+    <string name="app_name">Metro Utility Suite</string>
+    <string name="title_activity_main">Metro Utility Suite</string>
+    <string name="package_name">com.nawwal.metroutilitysuite</string>
+    <string name="custom_url_scheme">com.nawwal.metroutilitysuite</string>
 </resources>

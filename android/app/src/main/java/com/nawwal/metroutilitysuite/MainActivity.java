@@ -1,4 +1,4 @@
-package com.nawwal.currencyconverter;
+package com.nawwal.metroutilitysuite;
 
 import com.getcapacitor.BridgeActivity;
 

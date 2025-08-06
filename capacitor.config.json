@@ -1,6 +1,6 @@
 {
-  "appId": "com.nawwal.currencyconverter",
-  "appName": "Currency Convertor",
+  "appId": "com.nawwal.metroutilitysuite",
+  "appName": "Metro Utility Suite",
   "webDir": "dist",
   "plugins": {
     "Keyboard": {
