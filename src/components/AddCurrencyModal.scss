@@ -1,0 +1,298 @@
+@import '../App.scss';
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: fadeIn $metro-duration-normal ease;
+  padding: $base-unit * 3;
+  backdrop-filter: blur(20px);
+  
+  @media (max-width: $mobile-l) {
+    padding: 0; // Remove padding on mobile
+    align-items: flex-start; // Align to top instead of bottom
+    padding-top: env(safe-area-inset-top);
+    overflow-y: auto; // Allow scrolling if needed
+  }
+}
+
+.modal-content {
+  background: var(--surface-color);
+  color: var(--text-primary);
+  width: 100%;
+  max-width: 600px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  animation: slideInUp $metro-duration-slow $metro-ease;
+  overflow: hidden;
+  position: relative; // Add positioning
+  
+  @media (max-width: $mobile-l) {
+    max-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    height: 100vh; // Take full height
+    width: 100%;
+    margin-top: 0; // Ensure it starts from top
+  }
+}
+
+.modal-header {
+  padding: $base-unit * 3;
+  border-bottom: 1px solid var(--text-disabled);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  background: var(--card-color);
+  
+  h2 {
+    font-size: 1.5rem;
+    font-weight: $font-weight-light;
+    color: var(--text-primary);
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+  
+  .close-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all $metro-duration-normal $metro-ease;
+    font-weight: $font-weight-light;
+    
+    &:hover {
+      background: var(--surface-color);
+      color: var(--text-primary);
+      transform: scale(1.1);
+    }
+    
+    &:active {
+      transform: scale(0.9);
+    }
+  }
+}
+
+.search-section {
+  padding: $base-unit * 3;
+  border-bottom: 1px solid var(--text-disabled);
+  flex-shrink: 0;
+  background: var(--card-color);
+  
+  .search-input {
+    width: 100%;
+    background: var(--surface-color);
+    border: 2px solid transparent;
+    color: var(--text-primary);
+    padding: $base-unit * 2;
+    font-size: 1rem;
+    font-family: $font-family;
+    font-weight: $font-weight-normal;
+    transition: all $metro-duration-normal $metro-ease;
+    
+    &:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      background: var(--card-color);
+    }
+    
+    &::placeholder {
+      color: var(--text-secondary);
+      font-weight: $font-weight-semilight;
+    }
+  }
+}
+
+.currency-options {
+  flex: 1;
+  overflow-y: auto;
+  padding: $base-unit * 2;
+  display: flex;
+  flex-direction: column;
+  gap: $base-unit;
+  min-height: 200px; // Set minimum height
+  max-height: calc(100vh - 250px); // Limit max height to leave room for keyboard
+  background: var(--surface-color);
+  
+  @media (max-width: $mobile-l) {
+    max-height: calc(100vh - env(safe-area-inset-top) - 200px);
+  }
+  
+  // Custom Metro Scrollbar
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: var(--text-disabled);
+    
+    &:hover {
+      background: var(--text-secondary);
+    }
+  }
+  
+  .currency-option {
+  background: var(--card-color);
+  border: 2px solid transparent;
+  color: var(--text-primary);
+  padding: $base-unit * 2.5; // Increased from 2 to 2.5
+  min-height: 60px; // Add minimum height
+  cursor: pointer;
+  transition: all $metro-duration-normal $metro-ease;
+  display: flex;
+  align-items: center;
+  gap: $base-unit * 2;
+  text-align: left;
+  font-family: $font-family;
+  position: relative;
+  overflow: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--accent-color);
+      opacity: 0;
+      transition: opacity $metro-duration-normal $metro-ease;
+    }
+    
+    &:hover {
+      border-color: var(--accent-color);
+      transform: translateX(4px);
+      
+      &::before {
+        opacity: 0.1;
+      }
+    }
+    
+    &:active {
+      transform: translateX(2px) scale(0.98);
+    }
+    
+    .option-flag {
+      width: 40px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+      
+      .fi {
+        font-size: 28px;
+        border-radius: 2px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+    }
+    
+    .option-info {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; // Center content vertically
+    gap: 2px; // Add gap between code and name
+    
+    .option-code {
+      font-size: 1rem;
+      font-weight: $font-weight-semibold;
+      line-height: 1.2; // Ensure proper line height
+      letter-spacing: 0.02em;
+    }
+    
+    .option-name {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      font-weight: $font-weight-normal;
+      line-height: 1.2; // Ensure proper line height
+    }
+    }
+  }
+  
+  .no-results {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: $base-unit * 6;
+    
+    p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      text-align: center;
+      font-weight: $font-weight-semilight;
+    }
+  }
+}
+
+.modal-footer {
+  padding: $base-unit * 3;
+  border-top: 1px solid var(--text-disabled);
+  flex-shrink: 0;
+  background: var(--card-color);
+  
+  .currency-count {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    text-align: center;
+    margin: 0;
+    font-weight: $font-weight-normal;
+  }
+}
+
+// Animations
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+// Mobile Optimizations
+@media (max-width: $mobile-l) {
+  .modal-content {
+    animation: slideInUp $metro-duration-slow $metro-ease;
+  }
+  
+  .modal-header,
+  .search-section,
+  .modal-footer {
+    padding: $base-unit * 2;
+  }
+  
+  .currency-options {
+    padding: $base-unit;
+    
+    .currency-option {
+      padding: $base-unit * 1.5;
+      
+      .option-flag {
+        width: 36px;
+        height: 27px;
+        
+        .fi {
+          font-size: 24px;
+        }
+      }
+    }
+  }
+}

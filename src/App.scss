@@ -1,0 +1,455 @@
+// Metro UI Variables - Authentic Windows 10 Mobile Colors
+$primary-color: #0078d4;
+$accent-color: #0078d4;
+$dark-theme-bg: #000000;
+$dark-theme-surface: #171717;
+$dark-theme-card: #1f1f1f;
+$light-theme-bg: #ffffff;
+$light-theme-surface: #f2f2f2;
+$light-theme-card: #ffffff;
+
+// Metro Typography - Authentic Segoe UI
+$font-family: 'Segoe UI', 'Segoe WP', Tahoma, sans-serif;
+$font-weight-light: 200;
+$font-weight-semilight: 300;
+$font-weight-normal: 400;
+$font-weight-semibold: 600;
+
+// Metro Colors
+$text-primary-dark: #ffffff;
+$text-secondary-dark: #99ffffff;
+$text-disabled-dark: #66ffffff;
+$text-primary-light: #000000;
+$text-secondary-light: #99000000;
+$text-disabled-light: #66000000;
+
+// Metro Layout - Responsive Grid System
+$base-unit: 8px;
+$tile-margin: $base-unit;
+$tile-padding: $base-unit * 2;
+$content-padding: $base-unit * 3;
+
+// Animation - Metro Motion
+$metro-duration-fast: 0.1s;
+$metro-duration-normal: 0.25s;
+$metro-duration-slow: 0.5s;
+$metro-ease: cubic-bezier(0.1, 0.9, 0.2, 1);
+
+// Responsive Breakpoints - Ensuring minimum 2 cards
+$mobile-s: 320px;
+$mobile-m: 375px;
+$mobile-l: 414px;
+$tablet: 768px;
+$desktop: 1024px;
+
+:root {
+  --accent-color: #{$accent-color};
+  --bg-color: #{$dark-theme-bg};
+  --surface-color: #{$dark-theme-surface};
+  --card-color: #{$dark-theme-card};
+  --text-primary: #{$text-primary-dark};
+  --text-secondary: #{$text-secondary-dark};
+  --text-disabled: #{$text-disabled-dark};
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg-color: #{$light-theme-bg};
+    --surface-color: #{$light-theme-surface};
+    --card-color: #{$light-theme-card};
+    --text-primary: #{$text-primary-light};
+    --text-secondary: #{$text-secondary-light};
+    --text-disabled: #{$text-disabled-light};
+  }
+}
+
+// Force hardware acceleration for all animated elements
+.currency-tile,
+.loading-overlay,
+.modal-overlay,
+.add-currency-btn {
+  will-change: transform, opacity;
+  transform: translateZ(0); // Force GPU layer
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+// Optimize transforms to use only transform and opacity
+.currency-tile {
+
+  &:hover,
+  &.dragging,
+  &.drag-over {
+    // Use only transform and opacity - never trigger layout/paint
+    will-change: transform, opacity;
+  }
+
+  &:hover:not(.dragging) {
+    // Remove scale from hover to prevent repaints
+    transform: translate3d(0, -2px, 0);
+  }
+
+  &.dragging {
+    transform: translate3d(0, 0, 0) rotate(5deg) scale(0.95);
+  }
+
+  &.drag-over {
+    transform: translate3d(0, 0, 0) scale(1.05);
+  }
+}
+
+// Contain paint and layout for performance
+.currency-grid {
+  contain: layout style paint;
+}
+
+.currency-tile {
+  contain: layout style paint;
+  isolation: isolate; // Create stacking context
+}
+
+// Use transform instead of changing properties that cause reflow
+.refresh-btn {
+  &:hover:not(:disabled) {
+    transform: translate3d(0, 0, 0) scale(1.05);
+    // Remove background changes that cause repaints
+  }
+}
+
+// Optimize loading spinner
+.loading-spinner {
+  will-change: transform;
+  transform: translateZ(0);
+
+  @keyframes spin {
+    0% {
+      transform: translate3d(0, 0, 0) rotate(0deg);
+    }
+
+    100% {
+      transform: translate3d(0, 0, 0) rotate(360deg);
+    }
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: $font-family;
+  font-weight: $font-weight-semilight;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.4;
+  
+  // Add safe area padding for mobile devices
+  padding-top: env(safe-area-inset-top);
+  padding-top: constant(safe-area-inset-top); // iOS 11 fallback
+}
+
+.app {
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  padding: 0;
+}
+
+.app-container {
+  max-width: 100vw;
+  min-height: 100vh;
+  padding: $content-padding;
+  // Add extra top padding for mobile status bar
+  padding-top: calc(env(safe-area-inset-top) + #{$content-padding});
+  
+  @media (max-width: $mobile-l) {
+    padding: $base-unit * 2;
+    padding-top: calc(env(safe-area-inset-top) + #{$base-unit * 2});
+  }
+}
+
+// Metro Header - Windows 10 Mobile Style
+.header {
+  margin-bottom: $base-unit * 4;
+
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: $base-unit * 2;
+    flex-wrap: wrap;
+    gap: $base-unit * 2;
+  }
+
+  .app-title {
+    font-size: clamp(2rem, 8vw, 3.5rem);
+    font-weight: $font-weight-light;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    line-height: 0.9;
+    margin: 0;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: $base-unit;
+    flex-shrink: 0;
+  }
+
+  .refresh-btn {
+    background: var(--card-color);
+    border: 2px solid transparent;
+    color: var(--text-primary);
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    transition: all $metro-duration-normal $metro-ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+
+    &:hover:not(:disabled) {
+      background: var(--accent-color);
+      color: white;
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+
+      .refresh-icon {
+        animation: spin 1s linear infinite;
+      }
+    }
+  }
+
+  .last-updated {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    font-weight: $font-weight-normal;
+    margin-top: $base-unit;
+  }
+}
+
+// Enhanced Metro Tile Grid - Minimum 2 cards per row with drag support
+.currency-grid {
+  display: grid;
+  gap: $tile-margin;
+  margin-bottom: $base-unit * 4;
+
+  // Mobile: Always 2 cards minimum (even on smallest screens)
+  grid-template-columns: repeat(2, 1fr);
+
+  // Small mobile adjustments
+  @media (max-width: 360px) {
+    grid-template-columns: repeat(2, minmax(140px, 1fr));
+    gap: $base-unit * 0.5;
+  }
+
+  // Medium mobile: 2 comfortable cards
+  @media (min-width: 361px) and (max-width: $mobile-l) {
+    grid-template-columns: repeat(2, minmax(160px, 1fr));
+  }
+
+  // Large mobile and small tablet: 2-3 cards
+  @media (min-width: #{$mobile-l + 1px}) and (max-width: 599px) {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+
+  // Tablet: 3-4 cards
+  @media (min-width: 600px) and (max-width: $desktop - 1px) {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+
+  // Desktop: 4+ cards
+  @media (min-width: $desktop) {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+
+  // Drag and drop states
+  .currency-tile {
+    transition: all $metro-duration-normal $metro-ease;
+
+    &.dragging {
+      opacity: 0.5;
+      transform: rotate(5deg) scale(0.95);
+      z-index: 1000;
+    }
+
+    &.drag-over {
+      transform: scale(1.05);
+      box-shadow: 0 0 0 2px var(--accent-color);
+      background: var(--accent-color);
+
+      &::before {
+        opacity: 0.2;
+      }
+    }
+  }
+}
+
+// Add Currency Button - Metro Style
+.add-currency-section {
+  margin-bottom: $base-unit * 4;
+
+  .add-currency-btn {
+    width: 100%;
+    background: transparent;
+    border: 2px dashed var(--text-disabled);
+    color: var(--text-secondary);
+    padding: $base-unit * 3;
+    cursor: pointer;
+    transition: all $metro-duration-normal $metro-ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $base-unit * 2;
+    min-height: 64px;
+    font-size: 1rem;
+    font-weight: $font-weight-normal;
+    font-family: $font-family;
+
+    &:hover {
+      background: var(--surface-color);
+      border-color: var(--accent-color);
+      color: var(--accent-color);
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    .add-icon {
+      font-size: 1.5rem;
+      font-weight: $font-weight-light;
+    }
+  }
+}
+
+// Loading Overlay - Metro Style
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(20px);
+
+  .loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--text-disabled);
+    border-top: 3px solid var(--accent-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: $base-unit * 2;
+  }
+
+  p {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: $font-weight-normal;
+  }
+}
+
+// Metro Animations
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tileEntry {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes dragHover {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.02);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+// Focus States for Accessibility
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+// High Contrast Support
+@media (prefers-contrast: high) {
+  :root {
+    --accent-color: #0066cc;
+  }
+
+  .currency-tile {
+    border: 1px solid var(--text-primary);
+  }
+}
+
+// Reduced Motion Support
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .currency-tile.dragging {
+    transform: scale(0.95) !important;
+  }
+}

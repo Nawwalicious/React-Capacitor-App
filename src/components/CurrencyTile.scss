@@ -1,0 +1,507 @@
+@import '../App.scss';
+
+// Force 60fps with optimal CSS properties
+.currency-tile {
+  // Optimize for 60fps
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0); // Force GPU layer
+  backface-visibility: hidden;
+
+  // Use CSS containment for performance
+  contain: layout style paint;
+
+  // Optimize transitions to use only GPU-accelerated properties
+  transition: transform $metro-duration-normal $metro-ease,
+    opacity $metro-duration-normal $metro-ease;
+
+  // Remove box-shadow transitions that cause repaints
+  &:hover:not(.dragging) {
+    transform: translate3d(0, -2px, 0);
+  }
+
+  &.dragging {
+    transform: translate3d(0, 0, 0) rotate(5deg) scale(0.95);
+    opacity: 0.7;
+  }
+
+  &.drag-over {
+    transform: translate3d(0, 0, 0) scale(1.05);
+    // Use outline instead of box-shadow for better performance
+    outline: 3px solid var(--accent-color);
+    outline-offset: -3px;
+  }
+}
+
+// Optimize input performance
+.amount-input {
+  // Prevent layout thrashing during typing
+  contain: layout style;
+  will-change: contents;
+}
+
+// High-performance loading spinner
+@keyframes spin {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) rotate(360deg);
+  }
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.currency-tile {
+  background: var(--card-color);
+  color: var(--text-primary);
+  position: relative;
+  transition: all $metro-duration-normal $metro-ease;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  animation: tileEntry 0.4s $metro-ease;
+  cursor: grab;
+  overflow: hidden;
+  user-select: none;
+
+  // Metro Tile Hover Effect
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--accent-color);
+    opacity: 0;
+    transition: opacity $metro-duration-normal $metro-ease;
+    z-index: 1;
+  }
+
+  &:hover:not(.dragging) {
+    transform: scale(1.02);
+
+    &::before {
+      opacity: 0.1;
+    }
+
+    .remove-btn {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .drag-indicator {
+      opacity: 1;
+    }
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  &.dragging {
+    opacity: 0.7;
+    transform: rotate(5deg) scale(0.95);
+    z-index: 1000;
+    cursor: grabbing;
+
+    &::before {
+      opacity: 0.3;
+    }
+  }
+
+  &.drag-over {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 3px var(--accent-color);
+
+    &::before {
+      opacity: 0.2;
+    }
+  }
+
+  // Primary Currency (USD) - Accent Color
+  &.primary {
+    background: var(--accent-color);
+    color: white;
+
+    &::before {
+      background: white;
+      opacity: 0;
+    }
+
+    &:hover::before {
+      opacity: 0.1;
+    }
+
+    .currency-code,
+    .currency-name,
+    .currency-symbol,
+    .amount-input {
+      color: white;
+    }
+
+    .amount-input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .drag-indicator {
+      color: rgba(255, 255, 255, 0.7);
+    }
+  }
+
+  .remove-btn {
+    position: absolute;
+    top: $base-unit;
+    right: $base-unit;
+    background: #d32f2f;
+    color: white;
+    border: none;
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all $metro-duration-normal $metro-ease;
+    z-index: 2;
+    font-weight: bold;
+
+    // Always show on touch devices
+    @media (hover: none) and (pointer: coarse) {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    &:hover {
+      background: #c62828;
+      transform: scale(1.1);
+    }
+
+    &:active {
+      transform: scale(0.9);
+    }
+  }
+
+  .drag-indicator {
+    position: absolute;
+    top: $base-unit;
+    left: $base-unit;
+    color: var(--text-disabled);
+    font-size: 12px;
+    opacity: 0;
+    transition: all $metro-duration-normal $metro-ease;
+    z-index: 2;
+    pointer-events: none;
+    letter-spacing: -2px;
+    line-height: 0.8;
+  }
+
+  .tile-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: $tile-padding;
+    position: relative;
+    z-index: 1;
+    pointer-events: none; // Allow drag events to bubble up
+  }
+
+  .currency-header {
+    display: flex;
+    align-items: center;
+    gap: $base-unit * 2;
+    margin-bottom: $base-unit * 2;
+    min-height: 48px;
+
+    .currency-flag {
+      width: 48px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+
+      .fi {
+        font-size: 32px;
+        border-radius: 2px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+    }
+
+    .currency-info {
+      flex: 1;
+      min-width: 0;
+
+      .currency-code {
+        font-size: clamp(1rem, 3vw, 1.25rem);
+        font-weight: $font-weight-semibold;
+        margin-bottom: 2px;
+        letter-spacing: 0.02em;
+      }
+
+      .currency-name {
+        font-size: clamp(0.65rem, 2vw, 0.75rem);
+        color: var(--text-secondary);
+        font-weight: $font-weight-normal;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        opacity: 0.8;
+      }
+    }
+  }
+
+  .currency-amount {
+    display: flex;
+    align-items: center; // Changed from baseline to center
+    gap: $base-unit;
+    margin-top: auto;
+    pointer-events: auto;
+
+    .currency-symbol {
+      font-size: clamp(0.875rem, 2.5vw, 1rem);
+      font-weight: $font-weight-normal;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+      line-height: 1; // Add consistent line height
+      align-self: center; // Ensure vertical alignment
+
+      .primary & {
+        color: rgba(255, 255, 255, 0.9);
+      }
+    }
+
+    .amount-input {
+      background: transparent;
+      border: none;
+      font-size: clamp(1.25rem, 4vw, 1.75rem);
+      font-weight: $font-weight-light;
+      color: var(--text-primary);
+      font-family: $font-family;
+      width: 100%;
+      outline: none;
+      letter-spacing: -0.02em;
+      cursor: text;
+      line-height: 1.2; // Add consistent line height
+      padding: 0; // Reset any default padding
+      margin: 0; // Reset any default margin
+
+      &::placeholder {
+        color: var(--text-disabled);
+      }
+
+      &:focus {
+        color: var(--accent-color);
+      }
+
+      .primary &:focus {
+        color: white;
+      }
+
+      // Remove spinner arrows
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      &[type=number] {
+        -moz-appearance: textfield;
+      }
+    }
+  }
+}
+
+// Live Tile Animation Enhancement
+.currency-tile {
+  &.live {
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent);
+      transition: left 0.5s ease-in-out;
+      z-index: 0;
+    }
+
+    &:hover::after {
+      left: 100%;
+    }
+  }
+}
+
+// Touch feedback for mobile
+.currency-tile {
+  @media (hover: none) and (pointer: coarse) {
+    &:active {
+      transform: scale(0.98);
+
+      &::before {
+        opacity: 0.2;
+      }
+    }
+
+    .remove-btn {
+      opacity: 1; // Always visible on touch devices
+    }
+
+    .drag-indicator {
+      opacity: 0.7; // Always visible on touch devices
+    }
+  }
+}
+
+// Mobile Optimizations - Ensuring minimum 2 cards work well
+@media (max-width: 360px) {
+  .currency-tile {
+    min-height: 100px;
+
+    .tile-content {
+      padding: $base-unit;
+    }
+
+    .currency-header {
+      margin-bottom: $base-unit * 0.5;
+      min-height: 36px;
+
+      .currency-flag {
+        width: 36px;
+        height: 27px;
+
+        .fi {
+          font-size: 24px;
+        }
+      }
+
+      .currency-info {
+        .currency-code {
+          font-size: 0.9rem;
+        }
+
+        .currency-name {
+          font-size: 0.6rem;
+        }
+      }
+    }
+
+    .currency-amount {
+      .amount-input {
+        font-size: 1.1rem;
+      }
+
+      .currency-symbol {
+        font-size: 0.8rem;
+      }
+    }
+
+    .remove-btn,
+    .drag-indicator {
+      width: 20px;
+      height: 20px;
+      font-size: 12px;
+    }
+  }
+}
+
+@media (min-width: 361px) and (max-width: $mobile-l) {
+  .currency-tile {
+    min-height: 110px;
+
+    .tile-content {
+      padding: $base-unit * 1.5;
+    }
+
+    .currency-header {
+      margin-bottom: $base-unit;
+
+      .currency-flag {
+        width: 40px;
+        height: 30px;
+
+        .fi {
+          font-size: 28px;
+        }
+      }
+    }
+
+    .currency-amount .amount-input {
+      font-size: 1.3rem;
+    }
+  }
+}
+
+// Tablet and Desktop Optimizations
+@media (min-width: $tablet) {
+  .currency-tile {
+    min-height: 130px;
+
+    &:hover {
+      .drag-indicator {
+        opacity: 0.8;
+        transform: translateX(-2px);
+      }
+    }
+  }
+}
+
+// High DPI Support
+@media (-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
+  .currency-tile .currency-flag .fi {
+    transform: scale(0.9);
+  }
+}
+
+// Drag animations
+@keyframes dragPulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 120, 212, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 0 8px rgba(0, 120, 212, 0);
+  }
+}
+
+.currency-tile.drag-over {
+  animation: dragPulse 1s ease-in-out infinite;
+}
+
+// Accessibility improvements
+@media (prefers-reduced-motion: reduce) {
+  .currency-tile {
+    &.dragging {
+      transform: scale(0.95) !important;
+      animation: none !important;
+    }
+
+    &.drag-over {
+      animation: none !important;
+    }
+
+    &::after {
+      transition: none !important;
+    }
+  }
+}
+
+// Focus states for keyboard navigation
+.currency-tile:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
